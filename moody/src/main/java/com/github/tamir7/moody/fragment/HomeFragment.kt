@@ -14,7 +14,7 @@ import com.github.tamir7.moody.inject.FragmentComponent
 import timber.log.Timber
 
 class HomeFragment : MoodyFragment() {
-    private lateinit var unbinder: Unbinder
+    private var unbinder: Unbinder? = null
 
     override fun inject(component: FragmentComponent) = component.inject(this)
 
@@ -25,7 +25,7 @@ class HomeFragment : MoodyFragment() {
     }
 
     override fun onDestroyView() {
-        unbinder.unbind()
+        unbinder?.unbind()
         super.onDestroyView()
     }
 
