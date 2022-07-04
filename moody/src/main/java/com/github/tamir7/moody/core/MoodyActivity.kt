@@ -38,6 +38,10 @@ class MoodyActivity : AppCompatActivity() {
         toolbar?.setTitleTextColor(ContextCompat.getColor(applicationContext, R.color.black))
     }
 
+    fun setTitle(title: String) {
+        toolbar?.title = title
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         unbinder?.unbind()
