@@ -12,7 +12,6 @@ import com.github.tamir7.moody.core.MoodyFragment
 import com.github.tamir7.moody.core.EvaluateArguments
 import com.github.tamir7.moody.inject.FragmentComponent
 import com.github.tamir7.moody.util.GlideApp
-import timber.log.Timber
 
 class EvaluateFragment: MoodyFragment() {
     private var arguments: EvaluateArguments? = null
@@ -23,7 +22,6 @@ class EvaluateFragment: MoodyFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments = getArguments(EvaluateArguments::class.java)
-        Timber.e("uri = ${arguments?.uri}")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,7 +34,6 @@ class EvaluateFragment: MoodyFragment() {
         super.onViewCreated(view, savedInstanceState)
         arguments?.uri?.let { uri ->
             evaluatedImageView?.let {
-                Timber.e("Got here")
                 GlideApp.with(this).load(uri).into(it)
             }
         }
