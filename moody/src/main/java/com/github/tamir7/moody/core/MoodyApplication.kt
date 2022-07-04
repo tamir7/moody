@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.github.tamir7.moody.inject.ApplicationComponent
 import com.github.tamir7.moody.inject.DaggerApplicationComponent
+import com.github.tamir7.moody.navigator.Arguments
 import com.github.tamir7.moody.navigator.Screen
-import dagger.internal.DaggerCollections
 import timber.log.Timber
 
 class MoodyApplication : Application() {
@@ -28,7 +28,10 @@ class MoodyApplication : Application() {
 
     private fun registerScreens() {
         Screen.registerSubclass(HomeScreen::class.java)
+        Screen.registerSubclass(EvaluateScreen::class.java)
     }
 
-    private fun registerArguments() {}
+    private fun registerArguments() {
+        Arguments.registerSubclass(EvaluateArguments::class.java)
+    }
 }

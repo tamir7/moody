@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Moody</string>
     <string name="home_description_text">Helping socially awkward people to gauge the mood of their peers!</string>
-    <string name="home_action_button_text">Lets go!</string>
+    <string name="home_action_button_text">Take someone\'s picture</string>
     <string name="home_title_text">You are not alone</string>
+    <string name="result_title_text">Evaluating</string>
 </resources>

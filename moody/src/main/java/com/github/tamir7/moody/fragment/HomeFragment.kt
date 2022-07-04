@@ -1,39 +1,71 @@
 package com.github.tamir7.moody.fragment
 
-import android.content.Context
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.ButterKnife
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import butterknife.OnClick
-import butterknife.Unbinder
 import com.github.tamir7.moody.R
 import com.github.tamir7.moody.core.MoodyActivity
 import com.github.tamir7.moody.core.MoodyFragment
+import com.github.tamir7.moody.core.EvaluateArguments
+import com.github.tamir7.moody.core.EvaluateScreen
 import com.github.tamir7.moody.inject.FragmentComponent
-import timber.log.Timber
+import com.github.tamir7.moody.navigator.Navigator
+import com.github.tamir7.moody.util.CameraManager
+import javax.inject.Inject
+
 
 class HomeFragment : MoodyFragment() {
-    private var unbinder: Unbinder? = null
+    @Inject lateinit var navigator: Navigator
+    @Inject lateinit var cameraManager: CameraManager
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private var currentImageUri: Uri? = null
 
     override fun inject(component: FragmentComponent) = component.inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_home, null)
-        unbinder = ButterKnife.bind(this, view)
-        (activity as MoodyActivity)?.setTitle(getString(R.string.home_title_text))
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        return  view
+        resultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    handleCameraImage()
+                }
+            }
     }
 
-    override fun onDestroyView() {
-        unbinder?.unbind()
-        super.onDestroyView()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_home, null)
+        (activity as MoodyActivity).setTitle(getString(R.string.home_title_text))
+        return  view
     }
 
     @OnClick(R.id.home_action_button)
     fun onClickButton() {
-        Timber.d("Click!")
+       startCamera()
+    }
+
+    private fun startCamera() {
+        activity?.let {
+            cameraManager.createImageUri(it).let { uri ->
+                currentImageUri = uri
+                val intent = cameraManager.createImageCaptureIntent(uri)
+                resultLauncher.launch(intent)
+            }
+        }
+    }
+
+    private fun handleCameraImage() {
+        currentImageUri?.let {
+            navigator.add(EvaluateScreen(EvaluateArguments(it.toString())))
+        }
     }
 }

@@ -2,19 +2,24 @@ package com.github.tamir7.moody.navigator
 
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import com.github.tamir7.moody.annotation.ApplicationScope
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.kotlin.Observables
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ApplicationScope
-class Navigator @Inject constructor() {
+@Singleton
+class Navigator  {
     private var containerId: Int = 0
     private val activitySubject: BehaviorSubject<AppCompatActivity> = BehaviorSubject.create()
     private val enabledSubject: BehaviorSubject<Boolean> = BehaviorSubject.create()
     private var navigationDisposable: Disposable? = null
     private var backDisposable: Disposable? = null
+
+    @Inject constructor() {
+        Timber.e("creating object")
+    }
 
     private val source = Observables
         .combineLatest(enabledSubject.hide(), activitySubject.hide())
