@@ -10,6 +10,7 @@
         <entry key="..\:/Users/tamir/Projects/moody/moody/src/main/res/layout/fragment_camera.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/tamir/Projects/moody/moody/src/main/res/layout/fragment_evaluate.xml" value="0.371875" />
         <entry key="..\:/Users/tamir/Projects/moody/moody/src/main/res/layout/fragment_first.xml" value="0.19166666666666668" />
+        <entry key="..\:/Users/tamir/Projects/moody/moody/src/main/res/layout/fragment_home.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/tamir/Projects/moody/moody/src/main/res/layout/fragment_second.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/tamir/Projects/moody/moody/src/main/res/menu/menu_main.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/tamir/Projects/moody/moody/src/main/res/xml/file_paths.xml" value="0.19166666666666668" />
@@ -27,5 +28,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.371875" />
+      </ProjectState>
+    </option>
   </component>
 </project>
