@@ -29,9 +29,11 @@ class MoodyApplication : Application() {
     private fun registerScreens() {
         Screen.registerSubclass(HomeScreen::class.java)
         Screen.registerSubclass(EvaluateScreen::class.java)
+        Screen.registerSubclass(ResultScreen::class.java)
     }
 
     private fun registerArguments() {
         Arguments.registerSubclass(EvaluateArguments::class.java)
+        Arguments.registerSubclass(ResultArguments::class.java)
     }
 }

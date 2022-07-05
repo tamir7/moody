@@ -3,5 +3,18 @@
     <string name="home_description_text">Helping socially awkward people to gauge the mood of their peers!</string>
     <string name="home_action_button_text">Take someone\'s picture</string>
     <string name="home_title_text">You are not alone</string>
-    <string name="result_title_text">Evaluating</string>
+    <string name="evaluate_title_text">Evaluating</string>
+    <string name="evaluate_text">Our social experts are on it…</string>
+    <string name="result_toolbar_title_text">Result</string>
+    <string name="result_error_title_text">Error</string>
+    <string name="result_success_title_text">Success</string>
+    <string name="result_contempt_text">The person is showing contempt</string>
+    <string name="result_neutral_text">The person has a neutral expression</string>
+    <string name="result_sadness_text">The person is sad :(</string>
+    <string name="result_happiness_text">The person is Happy :)</string>
+    <string name="result_anger_text">The person is angry. Run!</string>
+    <string name="result_disgust_text">The person is disgusted</string>
+    <string name="result_fear_text">The person is frightened</string>
+    <string name="result_unknown_text">The person is a mystery</string>
+    <string name="result_go_again_button_text">Go again?</string>
 </resources>

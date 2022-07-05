@@ -21,10 +21,8 @@ import java.io.File
 import javax.inject.Inject
 
 class HomeFragment : MoodyFragment() {
-    @Inject
-    lateinit var navigator: Navigator
-    @Inject
-    lateinit var cameraManager: CameraManager
+    @Inject lateinit var navigator: Navigator
+    @Inject lateinit var cameraManager: CameraManager
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private var currentImageFile: File? = null
 
@@ -65,7 +63,6 @@ class HomeFragment : MoodyFragment() {
             }
         }
     }
-
 
     private fun handleCameraImage() {
         currentImageFile?.let { file ->

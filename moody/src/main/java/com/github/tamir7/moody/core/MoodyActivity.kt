@@ -11,6 +11,7 @@ import com.github.tamir7.moody.R
 import com.github.tamir7.moody.navigator.Navigator
 import javax.inject.Inject
 
+
 class MoodyActivity : AppCompatActivity() {
 
     @Inject lateinit var navigator: Navigator
@@ -33,9 +34,10 @@ class MoodyActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         toolbar?.setNavigationIcon(R.drawable.ic_action_back)
-        toolbar?.setNavigationOnClickListener { onBackPressed() }
+        toolbar?.setNavigationOnClickListener { navigator.goBack() }
         toolbar?.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
         toolbar?.setTitleTextColor(ContextCompat.getColor(applicationContext, R.color.black))
+        toolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.less_fun_red))
     }
 
     fun setTitle(title: String) {

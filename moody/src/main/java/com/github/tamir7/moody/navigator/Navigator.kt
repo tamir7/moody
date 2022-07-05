@@ -2,10 +2,8 @@ package com.github.tamir7.moody.navigator
 
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.kotlin.Observables
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,8 +12,6 @@ class Navigator @Inject constructor() {
     private var containerId: Int = 0
     private val activitySubject: BehaviorSubject<AppCompatActivity> = BehaviorSubject.create()
     private val enabledSubject: BehaviorSubject<Boolean> = BehaviorSubject.create()
-    private var navigationDisposable: Disposable? = null
-    private var backDisposable: Disposable? = null
 
     private val source = Observables
         .combineLatest(enabledSubject.hide(), activitySubject.hide())
@@ -39,21 +35,19 @@ class Navigator @Inject constructor() {
     fun replace(screen: Screen) = navigate(screen, false)
 
     fun goBack() {
-        backDisposable = source.subscribe { activity ->
+        source.take(1).subscribe { activity ->
             activity.onBackPressed()
-            backDisposable?.dispose()
         }
     }
 
     private fun navigate(screen: Screen, addToBackStack: Boolean = false) {
-        navigationDisposable = source.subscribe { activity ->
+        source.take(1).subscribe { activity ->
             activity.supportFragmentManager.beginTransaction().apply {
                 replace(containerId, screen.createFragment(), screen.javaClass.simpleName)
                 if (addToBackStack) {
                     addToBackStack(screen.javaClass.simpleName)
                 }
                 commit()
-                navigationDisposable?.dispose()
             }
         }
     }

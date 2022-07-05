@@ -1,6 +1,7 @@
 package com.github.tamir7.moody.service
 
 import androidx.exifinterface.media.ExifInterface
+import com.github.tamir7.moody.model.Emotions
 import com.github.tamir7.moody.util.FileUtils
 import io.reactivex.rxjava3.core.Observable
 import okhttp3.*
@@ -12,6 +13,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.RuntimeException
 
 
 @Singleton
@@ -41,13 +43,13 @@ class MoodRecognizer @Inject constructor() {
                 service.getEmotion(luxandKey, body)
             }.map { moods ->
                 if (moods.status == "failure") {
-                    throw UnknownError(moods.message)
+                    throw RuntimeException(moods.message)
                 }
                 if (moods.faces.isNullOrEmpty()) {
-                    throw UnknownError("Did not find any faces")
+                    throw RuntimeException("Did not find any faces")
                 }
                 if (moods.faces.size > 1) {
-                    throw UnknownError("Too many faces")
+                    throw RuntimeException("Too many faces")
                 }
                 moods.faces[0].emotions
             }
@@ -71,14 +73,6 @@ class MoodRecognizer @Inject constructor() {
 data class MoodResponse(val status: String, val message: String?, val faces: ArrayList<Faces>?)
 
 data class Faces(val emotions: Emotions)
-
-data class Emotions(val contempt: Double?,
-                    val neutral: Double?,
-                    val sadness: Double?,
-                    val happiness: Double?,
-                    val anger: Double?,
-                    val disgust: Double?,
-                    val fear: Double?)
 
 interface LuxandService {
     @Multipart
