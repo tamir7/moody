@@ -10,16 +10,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class Navigator  {
+class Navigator @Inject constructor() {
     private var containerId: Int = 0
     private val activitySubject: BehaviorSubject<AppCompatActivity> = BehaviorSubject.create()
     private val enabledSubject: BehaviorSubject<Boolean> = BehaviorSubject.create()
     private var navigationDisposable: Disposable? = null
     private var backDisposable: Disposable? = null
-
-    @Inject constructor() {
-        Timber.e("creating object")
-    }
 
     private val source = Observables
         .combineLatest(enabledSubject.hide(), activitySubject.hide())

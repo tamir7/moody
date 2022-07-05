@@ -1,11 +1,8 @@
 package com.github.tamir7.moody.fragment
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,14 +17,16 @@ import com.github.tamir7.moody.core.EvaluateScreen
 import com.github.tamir7.moody.inject.FragmentComponent
 import com.github.tamir7.moody.navigator.Navigator
 import com.github.tamir7.moody.util.CameraManager
+import java.io.File
 import javax.inject.Inject
 
-
 class HomeFragment : MoodyFragment() {
-    @Inject lateinit var navigator: Navigator
-    @Inject lateinit var cameraManager: CameraManager
+    @Inject
+    lateinit var navigator: Navigator
+    @Inject
+    lateinit var cameraManager: CameraManager
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    private var currentImageUri: Uri? = null
+    private var currentImageFile: File? = null
 
     override fun inject(component: FragmentComponent) = component.inject(this)
 
@@ -42,30 +41,35 @@ class HomeFragment : MoodyFragment() {
             }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_home, null)
         (activity as MoodyActivity).setTitle(getString(R.string.home_title_text))
-        return  view
+        return view
     }
 
     @OnClick(R.id.home_action_button)
     fun onClickButton() {
-       startCamera()
+        startCamera()
     }
 
     private fun startCamera() {
         activity?.let {
-            cameraManager.createImageUri(it).let { uri ->
-                currentImageUri = uri
-                val intent = cameraManager.createImageCaptureIntent(uri)
+            cameraManager.createImageFile(it).let { file ->
+                currentImageFile = file
+                val intent = cameraManager.createImageCaptureIntent(it, file)
                 resultLauncher.launch(intent)
             }
         }
     }
 
+
     private fun handleCameraImage() {
-        currentImageUri?.let {
-            navigator.add(EvaluateScreen(EvaluateArguments(it.toString())))
+        currentImageFile?.let { file ->
+            navigator.add(EvaluateScreen(EvaluateArguments(file.toString())))
         }
     }
 }

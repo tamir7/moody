@@ -9,7 +9,7 @@ class HomeScreen: Screen() {
     override fun create() = HomeFragment()
 }
 
-class EvaluateArguments(val uri: String): Arguments()
+class EvaluateArguments(val file: String): Arguments()
 
 class EvaluateScreen(args: EvaluateArguments): Screen(args) {
 
