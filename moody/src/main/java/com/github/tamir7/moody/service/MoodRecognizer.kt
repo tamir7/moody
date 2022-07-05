@@ -1,14 +1,13 @@
 package com.github.tamir7.moody.service
 
-import com.google.gson.Gson
+import androidx.exifinterface.media.ExifInterface
+import com.github.tamir7.moody.util.FileUtils
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import timber.log.Timber
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -32,28 +31,40 @@ class MoodRecognizer @Inject constructor() {
 
     private val service = retrofit.create(LuxandService::class.java)
 
-    fun getEmotion(fileUri: String) {
-
-        val file = File(fileUri)
-
-        val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), file)
-        val body: MultipartBody.Part =
-            MultipartBody.Part.createFormData("photo", file.name, requestFile)
-
-        service.getEmotion(luxandKey, body).subscribeOn(Schedulers.io()).subscribe ({res ->
-            Timber.e(res.status)
-            if (res.status == "failure") {
-                Timber.e(res.message)
-            } else if (res.status == "success") {
-                res.faces?.let {
-                    it.forEach { face ->
-                        Timber.e("Emotions: ${Gson().toJson(face.emotions)}")
-                    }
+    fun getEmotion(fileUri: String): Observable<Emotions> {
+        return Observable.just(fileUri)
+            .map { uri -> fixOrientation(uri) }
+            .map { file ->
+                val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), file)
+                return@map MultipartBody.Part.createFormData("photo", file.name, requestFile)
+            }.flatMap { body ->
+                service.getEmotion(luxandKey, body)
+            }.map { moods ->
+                if (moods.status == "failure") {
+                    throw UnknownError(moods.message)
                 }
+                if (moods.faces.isNullOrEmpty()) {
+                    throw UnknownError("Did not find any faces")
+                }
+                if (moods.faces.size > 1) {
+                    throw UnknownError("Too many faces")
+                }
+                moods.faces[0].emotions
+            }
+    }
+
+
+    private fun fixOrientation(fileUri: String): File {
+        var file = File(fileUri)
+        val exif = ExifInterface(file)
+        val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+        if (orientation != ExifInterface.ORIENTATION_NORMAL) {
+            file = FileUtils.rotateFile(file, orientation)
+            val newExif = ExifInterface(file)
+            newExif.resetOrientation()
+            newExif.saveAttributes()
         }
-        }, {err ->
-            Timber.e(err.message)
-        })
+        return file
     }
 }
 
@@ -61,7 +72,13 @@ data class MoodResponse(val status: String, val message: String?, val faces: Arr
 
 data class Faces(val emotions: Emotions)
 
-data class Emotions(val contempt: Double?, val natural: Double?, val sadness: Double?, val happiness: Double)
+data class Emotions(val contempt: Double?,
+                    val neutral: Double?,
+                    val sadness: Double?,
+                    val happiness: Double?,
+                    val anger: Double?,
+                    val disgust: Double?,
+                    val fear: Double?)
 
 interface LuxandService {
     @Multipart

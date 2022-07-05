@@ -14,6 +14,9 @@ import com.github.tamir7.moody.inject.FragmentComponent
 import com.github.tamir7.moody.service.MoodRecognizer
 import com.github.tamir7.moody.util.CameraManager
 import com.github.tamir7.moody.util.GlideApp
+import com.google.gson.Gson
+import io.reactivex.rxjava3.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -48,7 +51,10 @@ class EvaluateFragment: MoodyFragment() {
     override fun onStart() {
         super.onStart()
         arguments?.let {
-            moodRecognizer.getEmotion(it.file)
+            moodRecognizer.getEmotion(it.file).subscribeOn(Schedulers.io()).subscribe({ emotions ->
+                Timber.e("Got Emotions = ${Gson().toJson(emotions)}")
+
+            }, {error -> Timber.e("Got error ${error.message}")})
         }
     }
 }
